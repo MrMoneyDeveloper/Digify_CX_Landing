@@ -1,9 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
   const reduceMotionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
   let prefersReduceMotion = reduceMotionQuery ? reduceMotionQuery.matches : false;
-  let isSmall = window.innerWidth < 768;
+  const isMobile = () => window.innerWidth < 768;
+  let isSmall = isMobile();
   const setViewportFlags = () => {
-    isSmall = window.innerWidth < 768;
+    isSmall = isMobile();
     document.body.classList.toggle('mobile-performance', isSmall);
     return isSmall;
   };
