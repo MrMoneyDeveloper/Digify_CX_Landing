@@ -1,6 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const prefersReduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const isSmall = window.innerWidth < 768;
+  const reduceMotionQuery = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  let prefersReduceMotion = reduceMotionQuery ? reduceMotionQuery.matches : false;
+  let isSmall = window.innerWidth < 768;
+  const setViewportFlags = () => {
+    isSmall = window.innerWidth < 768;
+    document.body.classList.toggle('mobile-performance', isSmall);
+    return isSmall;
+  };
+  setViewportFlags();
 
   if (prefersReduceMotion) {
     document.body.classList.add('reduced-motion');
@@ -15,7 +22,26 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   }
 
-  new bootstrap.ScrollSpy(document.body, { target: '#mainNav', offset: 90 });
+  const nav = document.getElementById('mainNav');
+  const setNavOffset = () => {
+    const offset = nav ? nav.offsetHeight : 82;
+    document.documentElement.style.setProperty('--nav-offset', `${offset}px`);
+    return offset;
+  };
+  const getScrollOffset = () => (nav ? nav.offsetHeight + 12 : 90);
+  setNavOffset();
+  document.body.setAttribute('data-bs-offset', String(getScrollOffset()));
+  let scrollSpy = null;
+  if (nav) {
+    scrollSpy = new bootstrap.ScrollSpy(document.body, { target: '#mainNav', offset: getScrollOffset() });
+  }
+  const navCollapseEl = document.getElementById('navbarNav');
+  const navCollapse = navCollapseEl ? bootstrap.Collapse.getOrCreateInstance(navCollapseEl, { toggle: false }) : null;
+  const closeNavCollapse = () => {
+    if (!navCollapseEl || !navCollapseEl.classList.contains('show')) return;
+    const instance = bootstrap.Collapse.getInstance(navCollapseEl) || navCollapse;
+    if (instance) instance.hide();
+  };
 
   // Brand focus mode (scroll + click lock)
   const brandMap = {
@@ -134,8 +160,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const scrollToTarget = (target) => {
     if (!target) return;
-    const y = target.getBoundingClientRect().top + window.pageYOffset - 70;
-    window.scrollTo({ top: y, behavior: prefersReduceMotion ? 'auto' : 'smooth' });
+    const offset = getScrollOffset();
+    const y = target.getBoundingClientRect().top + window.pageYOffset - offset;
+    window.scrollTo({ top: Math.max(0, y), behavior: prefersReduceMotion ? 'auto' : 'smooth' });
   };
 
   const handleBrandLinkClick = (target) => {
@@ -148,13 +175,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', (e) => {
-      const target = document.querySelector(anchor.getAttribute('href'));
+      const targetSelector = anchor.getAttribute('href');
+      if (!targetSelector || targetSelector === '#') return;
+      let target = null;
+      try {
+        target = document.querySelector(targetSelector);
+      } catch (err) {
+        return;
+      }
       if (!target) return;
       e.preventDefault();
       const isBrandPill = anchor.classList.contains('brand-pill');
       const brandKey = target.dataset.brand;
       if (isBrandPill || (brandKey && brandKey !== 'digifycx')) handleBrandLinkClick(target);
       scrollToTarget(target);
+      if (navCollapseEl && navCollapseEl.contains(anchor)) closeNavCollapse();
     });
   });
 
@@ -219,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
   sections.forEach(sec => indicatorObserver.observe(sec));
   indicatorButtons.forEach(btn => btn.addEventListener('click', () => {
     const target = document.querySelector(btn.dataset.target);
-    if (target) target.scrollIntoView({ behavior: 'smooth' });
+    if (target) scrollToTarget(target);
   }));
 
   const body = document.body;
@@ -233,6 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let vantaEffect = null;
   const heroVantaEl = document.getElementById('hero-vanta');
+  let heroInView = true;
   const initVanta = () => {
     if (vantaEffect || prefersReduceMotion || isSmall) return;
     if (!window.VANTA || !heroVantaEl) return;
@@ -253,14 +289,34 @@ document.addEventListener('DOMContentLoaded', () => {
     vantaEffect.destroy();
     vantaEffect = null;
   };
-  initVanta();
+  const updateVanta = () => {
+    if (!heroInView || prefersReduceMotion || isSmall) {
+      destroyVanta();
+      return;
+    }
+    initVanta();
+  };
+  updateVanta();
   if (hero) {
     const heroObserver = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) initVanta();
-      else destroyVanta();
+      heroInView = entry.isIntersecting;
+      updateVanta();
     }, { threshold: 0.1 });
     heroObserver.observe(hero);
   }
+
+  const handleResize = () => {
+    const wasSmall = isSmall;
+    setViewportFlags();
+    setNavOffset();
+    document.body.setAttribute('data-bs-offset', String(getScrollOffset()));
+    if (scrollSpy) {
+      scrollSpy.dispose();
+      scrollSpy = new bootstrap.ScrollSpy(document.body, { target: '#mainNav', offset: getScrollOffset() });
+    }
+    if (wasSmall !== isSmall) updateVanta();
+  };
+  window.addEventListener('resize', handleResize);
 
   const stickyCta = document.querySelector('.sticky-cta');
   const toggleSticky = () => {
@@ -287,6 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const contactForm = document.getElementById('contact-form');
+  const submitBtn = contactForm ? contactForm.querySelector('button[type="submit"]') : null;
   const toastContainer = document.querySelector('.toast-container');
   const showToast = (msg) => {
     const toast = document.createElement('div');
@@ -296,14 +353,24 @@ document.addEventListener('DOMContentLoaded', () => {
     toastContainer.appendChild(toast);
     setTimeout(() => toast.remove(), 3200);
   };
+  const setFormLoading = (isLoading) => {
+    if (!contactForm || !submitBtn) return;
+    contactForm.classList.toggle('is-loading', isLoading);
+    submitBtn.classList.toggle('is-loading', isLoading);
+    submitBtn.disabled = isLoading;
+  };
   if (contactForm) {
     contactForm.addEventListener('submit', (e) => {
       e.preventDefault();
       contactForm.classList.add('was-validated');
       if (!contactForm.checkValidity()) return;
-      showToast('Docking request received. We will respond shortly (mock).');
-      contactForm.reset();
-      contactForm.classList.remove('was-validated');
+      setFormLoading(true);
+      window.setTimeout(() => {
+        showToast('Docking request received. We will respond shortly (mock).');
+        contactForm.reset();
+        contactForm.classList.remove('was-validated');
+        setFormLoading(false);
+      }, 800);
     });
   }
 });

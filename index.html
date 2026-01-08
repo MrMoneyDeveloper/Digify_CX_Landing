@@ -17,7 +17,7 @@
   <nav id="mainNav" class="navbar navbar-expand-lg navbar-dark fixed-top">
     <div class="container">
       <a class="navbar-brand fw-bold" href="#hero">Digify CX</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
@@ -52,7 +52,7 @@
     <div class="hero-overlay"></div>
     <div class="hero-fade"></div>
     <div class="floating-orb" style="width:220px;height:220px;top:16%;left:8%;animation-duration:12s;"></div>
-    <div class="floating-orb" style="width:180px;height:180px;bottom:12%;right:14%;animation-duration:10s;"></div>
+    <div class="floating-orb orb-mobile-hide" style="width:180px;height:180px;bottom:12%;right:14%;animation-duration:10s;"></div>
     <div class="container position-relative hero-content">
       <div class="row">
         <div class="col-lg-7">
@@ -72,8 +72,8 @@
           </div>
         </div>
       </div>
-      <div class="floating-hud" style="top: 24%; right: 6%;">Signal Strength: 92%</div>
-      <div class="floating-hud" style="bottom: 20%; right: 10%;">HUD: CX-Portal / v1.0</div>
+      <div class="floating-hud floating-hud-top" style="top: 24%; right: 6%;">Signal Strength: 92%</div>
+      <div class="floating-hud floating-hud-bottom" style="bottom: 20%; right: 10%;">HUD: CX-Portal / v1.0</div>
     </div>
     <div class="vignette"></div>
   </header>
@@ -81,7 +81,7 @@
   <!-- Group Stack -->
   <section id="group" class="section-block position-relative" data-brand="digifycx">
     <div class="floating-orb" style="width:200px;height:200px;top:10%;left:4%;animation-duration:11s;"></div>
-    <div class="floating-orb" style="width:160px;height:160px;bottom:12%;right:6%;animation-duration:13s;"></div>
+    <div class="floating-orb orb-mobile-hide" style="width:160px;height:160px;bottom:12%;right:6%;animation-duration:13s;"></div>
     <div class="container position-relative">
       <div class="chapter-label reveal" data-reveal="left">Chapter 02 - Group Stack</div>
       <div class="row g-4 align-items-center">
@@ -98,7 +98,7 @@
         </div>
         <div class="col-lg-6 reveal" data-reveal="right">
           <div class="stack-banner">
-            <img src="assets/img/group-stack.png" class="img-fluid w-100" alt="One Group One Stack banner">
+            <img src="assets/img/group-stack.png" class="img-fluid w-100" alt="One Group One Stack banner" loading="lazy" decoding="async">
           </div>
         </div>
       </div>
@@ -111,12 +111,12 @@
       <div class="chapter-label reveal" data-reveal="left">Chapter B - Outbound CX</div>
       <div class="row g-4 align-items-center">
         <div class="col-lg-6 reveal" data-reveal="right">
-          <img src="assets/img/outbound-cx.png" alt="Outbound CX logo" class="logo mb-3">
+          <img src="assets/img/outbound-cx.png" alt="Outbound CX logo" class="logo mb-3 img-fluid" loading="lazy" decoding="async">
           <h3 class="fw-bold d-flex align-items-center gap-2">Call. Connect. Convert.<span class="ticker">-></span></h3>
           <p class="text-secondary mb-3">This is the revenue engine. Outbound CX is built for speed: call, connect, convert—without fluff. We run campaigns that generate meetings, recover customers, and create pipeline.</p>
           <div class="glass p-3 mb-3">
             <div class="ratio ratio-21x9 rounded-3 overflow-hidden">
-              <img src="assets/img/banner-04.jpg" class="w-100 h-100 object-fit-cover" alt="Outbound CX banner">
+              <img src="assets/img/banner-04.jpg" class="img-fluid w-100 h-100 object-fit-cover" alt="Outbound CX banner" loading="lazy" decoding="async">
             </div>
             <p class="text-secondary small mb-0 mt-2">Campaign creative, scripts and reporting dashboards—built for momentum and clarity.</p>
           </div>
@@ -175,11 +175,11 @@
       <div class="row g-4 align-items-center">
         <div class="col-lg-7 reveal" data-reveal="zoom">
           <div class="glass p-3 orbit-card">
-            <img src="assets/img/digify-bpo.png" alt="digify BPO logo" class="logo mb-3">
+            <img src="assets/img/digify-bpo.png" alt="digify BPO logo" class="logo mb-3 img-fluid" loading="lazy" decoding="async">
             <h3 class="fw-bold">The world's first Zendesk-dedicated BPO</h3>
             <p class="text-secondary mb-2">The world’s first Zendesk-dedicated BPO—built for modern, automated CX. When your support needs to run 24/7 across channels, we plug in as an extension of your Zendesk operation.</p>
             <div class="ratio ratio-21x9 rounded-3 overflow-hidden mb-2">
-              <img src="assets/img/banner-03.jpg" class="w-100 h-100 object-fit-cover" alt="digify BPO banner">
+              <img src="assets/img/banner-03.jpg" class="img-fluid w-100 h-100 object-fit-cover" alt="digify BPO banner" loading="lazy" decoding="async">
             </div>
             <p class="text-secondary small mb-0">24/7 Zendesk-aligned staffing across channels, with back-office and automation support when volume spikes.</p>
           </div>
@@ -191,25 +191,25 @@
             <div class="pulse-line"></div>
           </div>
           <div class="row g-3">
-            <div class="col-6">
+            <div class="col-12 col-sm-6">
               <div class="capability">
                 <h6 class="mb-1">Implementation</h6>
                 <p class="text-secondary small mb-0">Help centres, macros, workflows.</p>
               </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-sm-6">
               <div class="capability">
                 <h6 class="mb-1">Automation</h6>
                 <p class="text-secondary small mb-0">Back-office + ticketing automation support.</p>
               </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-sm-6">
               <div class="capability">
                 <h6 class="mb-1">Co-sourced</h6>
                 <p class="text-secondary small mb-0">Flexible, usage-based pricing.</p>
               </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-sm-6">
               <div class="capability">
                 <h6 class="mb-1">Global fit</h6>
                 <p class="text-secondary small mb-0">UK/US/AU/SA alignment + accent-neutral teams.</p>
@@ -242,7 +242,7 @@
   <!-- Partners & Stack -->
   <section id="partners-stack" class="section-block position-relative" style="background: linear-gradient(180deg,#0d1330,#111a3c);" data-brand="digifycx">
     <div class="floating-orb" style="width:200px;height:200px;top:8%;left:6%;"></div>
-    <div class="floating-orb" style="width:180px;height:180px;bottom:10%;right:8%;"></div>
+    <div class="floating-orb orb-mobile-hide" style="width:180px;height:180px;bottom:10%;right:8%;"></div>
     <div class="container position-relative">
       <div class="chapter-label reveal" data-reveal="left">Chapter 05.5 - Partners & Stack</div>
       <div class="row g-4 align-items-center">
@@ -250,16 +250,16 @@
           <h3 class="fw-bold mb-3">Zendesk Core + orbiting partners</h3>
           <p class="text-secondary mb-3">Implementations, AI automation, staffing, and managed services operate as a single ecosystem anchored on Zendesk. Hover a partner to see the capability snippet.</p>
           <div class="row g-2">
-            <div class="col-6">
+            <div class="col-12 col-sm-6">
               <div class="glass p-2 small">Implementations</div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-sm-6">
               <div class="glass p-2 small">AI + Automation</div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-sm-6">
               <div class="glass p-2 small">Staffing (24/7)</div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-sm-6">
               <div class="glass p-2 small">Managed Services</div>
             </div>
           </div>
@@ -275,7 +275,7 @@
               <div class="orbit-card flip-wrap">
                 <div class="flip">
                   <div class="flip-face d-flex align-items-center justify-content-center glass h-100">
-                    <img src="https://via.placeholder.com/120x40?text=Zendesk" alt="Zendesk logo" class="img-fluid">
+                    <img src="https://via.placeholder.com/120x40?text=Zendesk" alt="Zendesk logo" class="img-fluid" loading="lazy" decoding="async">
                   </div>
                   <div class="flip-face flip-back d-flex align-items-center justify-content-center glass h-100">
                     <span class="text-secondary small text-center">CX platform backbone, APIs, AI.</span>
@@ -287,7 +287,7 @@
               <div class="orbit-card flip-wrap">
                 <div class="flip">
                   <div class="flip-face d-flex align-items-center justify-content-center glass h-100">
-                    <img src="https://via.placeholder.com/120x40?text=digify+BPO" alt="digify BPO logo" class="img-fluid">
+                    <img src="https://via.placeholder.com/120x40?text=digify+BPO" alt="digify BPO logo" class="img-fluid" loading="lazy" decoding="async">
                   </div>
                   <div class="flip-face flip-back d-flex align-items-center justify-content-center glass h-100">
                     <span class="text-secondary small text-center">24/7 Zendesk-aligned staffing.</span>
@@ -299,7 +299,7 @@
               <div class="orbit-card flip-wrap">
                 <div class="flip">
                   <div class="flip-face d-flex align-items-center justify-content-center glass h-100">
-                    <img src="https://via.placeholder.com/120x40?text=CX+Experts" alt="CX Experts logo" class="img-fluid">
+                    <img src="https://via.placeholder.com/120x40?text=CX+Experts" alt="CX Experts logo" class="img-fluid" loading="lazy" decoding="async">
                   </div>
                   <div class="flip-face flip-back d-flex align-items-center justify-content-center glass h-100">
                     <span class="text-secondary small text-center">Implementations, optimisation, AI.</span>
@@ -311,7 +311,7 @@
               <div class="orbit-card flip-wrap">
                 <div class="flip">
                   <div class="flip-face d-flex align-items-center justify-content-center glass h-100">
-                    <img src="https://via.placeholder.com/120x40?text=Outbound+CX" alt="Outbound CX logo" class="img-fluid">
+                    <img src="https://via.placeholder.com/120x40?text=Outbound+CX" alt="Outbound CX logo" class="img-fluid" loading="lazy" decoding="async">
                   </div>
                   <div class="flip-face flip-back d-flex align-items-center justify-content-center glass h-100">
                     <span class="text-secondary small text-center">Performance outbound + revenue ops.</span>
@@ -323,7 +323,7 @@
               <div class="orbit-card flip-wrap">
                 <div class="flip">
                   <div class="flip-face d-flex align-items-center justify-content-center glass h-100">
-                    <img src="https://via.placeholder.com/120x40?text=CX+Leads" alt="CX Leads logo" class="img-fluid">
+                    <img src="https://via.placeholder.com/120x40?text=CX+Leads" alt="CX Leads logo" class="img-fluid" loading="lazy" decoding="async">
                   </div>
                   <div class="flip-face flip-back d-flex align-items-center justify-content-center glass h-100">
                     <span class="text-secondary small text-center">Lead capture, funnels, conversion.</span>
@@ -335,7 +335,7 @@
               <div class="orbit-card flip-wrap">
                 <div class="flip">
                   <div class="flip-face d-flex align-items-center justify-content-center glass h-100">
-                    <img src="assets/img/capaciti.png" alt="CAPACITI logo" class="img-fluid">
+                    <img src="assets/img/capaciti.png" alt="CAPACITI logo" class="img-fluid" loading="lazy" decoding="async">
                   </div>
                   <div class="flip-face flip-back d-flex align-items-center justify-content-center glass h-100">
                     <div class="text-center">
@@ -370,7 +370,7 @@
           </ul>
           <div class="glass p-3">
             <div class="ratio ratio-16x9 rounded-3 overflow-hidden">
-              <img src="assets/img/digify-cx.png" class="w-100 h-100 object-fit-cover" alt="digify CX Group preview">
+              <img src="assets/img/digify-cx.png" class="img-fluid w-100 h-100 object-fit-cover" alt="digify CX Group preview" loading="lazy" decoding="async">
             </div>
           </div>
         </div>
@@ -397,7 +397,7 @@
             <div class="col-12">
               <div class="glass p-3">
                 <div class="ratio ratio-21x9 rounded-3 overflow-hidden">
-                  <img src="assets/img/digify-cx.png" class="w-100 h-100 object-fit-cover" alt="digify CX Group banner image">
+                  <img src="assets/img/digify-cx.png" class="img-fluid w-100 h-100 object-fit-cover" alt="digify CX Group banner image" loading="lazy" decoding="async">
                 </div>
               </div>
             </div>
@@ -411,7 +411,7 @@
   <!-- Our Story -->
   <section id="story" class="section-block story-section position-relative" style="background: linear-gradient(180deg,#060914,#0f1a2d);" data-brand="digifycx">
     <div class="floating-orb" style="width:190px;height:190px;top:12%;left:6%;animation-duration:12s;"></div>
-    <div class="floating-orb" style="width:160px;height:160px;bottom:8%;right:10%;animation-duration:11s;"></div>
+    <div class="floating-orb orb-mobile-hide" style="width:160px;height:160px;bottom:8%;right:10%;animation-duration:11s;"></div>
     <div class="container position-relative">
       <div class="chapter-label reveal" data-reveal="left">Chapter 04 - Our Story</div>
       <div class="row g-4 align-items-start">
@@ -621,11 +621,11 @@
     <div class="container">
       <div class="chapter-label reveal" data-reveal="left">Chapter 06 - Services by Brand</div>
       <h2 class="fw-bold mb-4 reveal" data-reveal="left">Services and Tone</h2>
-      <ul class="nav nav-pills mb-3" id="services-tabs" role="tablist">
-        <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-cxexperts" type="button">CX Experts</button></li>
-        <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-bpo" type="button">digify BPO</button></li>
-        <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-outbound" type="button">Outbound CX</button></li>
-        <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-leads" type="button">CX Leads</button></li>
+      <ul class="nav nav-pills mb-3 flex-nowrap overflow-auto gap-2 services-tabs" id="services-tabs" role="tablist">
+        <li class="nav-item"><button class="nav-link active" data-bs-toggle="pill" data-bs-target="#tab-cxexperts" type="button" role="tab" aria-controls="tab-cxexperts" aria-selected="true">CX Experts</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-bpo" type="button" role="tab" aria-controls="tab-bpo" aria-selected="false">digify BPO</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-outbound" type="button" role="tab" aria-controls="tab-outbound" aria-selected="false">Outbound CX</button></li>
+        <li class="nav-item"><button class="nav-link" data-bs-toggle="pill" data-bs-target="#tab-leads" type="button" role="tab" aria-controls="tab-leads" aria-selected="false">CX Leads</button></li>
       </ul>
       <div class="tab-content glass p-4">
         <div class="tab-pane fade show active" id="tab-cxexperts">
@@ -690,11 +690,11 @@
       <div class="chapter-label reveal" data-reveal="left">Chapter D - CX Leads</div>
       <div class="row g-4 align-items-center">
         <div class="col-lg-6 reveal" data-reveal="up">
-          <img src="assets/img/cx-leads.png" alt="CX Leads logo" class="logo mb-3">
+          <img src="assets/img/cx-leads.png" alt="CX Leads logo" class="logo mb-3 img-fluid" loading="lazy" decoding="async">
           <h3 class="fw-bold">Turning Clicks Into Clients</h3>
           <p class="text-secondary">Turning clicks into clients. CX Leads builds the growth layer—positioning, ads, landing pages and conversion systems—so demand becomes pipeline that Outbound CX can close.</p>
           <div class="glass p-3 mb-3 orbit-card">
-            <img src="assets/img/banner-02.jpg" class="w-100 rounded-3" alt="CX Leads banner">
+            <img src="assets/img/banner-02.jpg" class="img-fluid w-100 rounded-3" alt="CX Leads banner" loading="lazy" decoding="async">
             <p class="text-secondary small mb-0 mt-2">Landing pages, lead magnets and reporting views—built for fast iteration and clean handoff.</p>
           </div>
           <div class="proof-strip mb-3">
@@ -759,12 +759,12 @@
       <div class="row g-4 align-items-center">
         <div class="col-lg-5 reveal" data-reveal="left">
           <div class="pulse-line mb-3"></div>
-          <img src="assets/img/cx-experts.png" alt="CX Experts logo" class="logo mb-3">
+          <img src="assets/img/cx-experts.png" alt="CX Experts logo" class="logo mb-3 img-fluid" loading="lazy" decoding="async">
           <h3 class="fw-bold">South Africa's #1 Zendesk Partner</h3>
           <p class="text-secondary mb-3">South Africa’s #1 Zendesk Partner. We scope, build and optimise Zendesk environments that feel effortless for customers and powerful for agents—then we keep improving them.</p>
           <div class="glass p-3 orbit-card">
             <div class="ratio ratio-16x9 rounded-3 overflow-hidden">
-              <img src="assets/img/banner-01.jpg" class="w-100 rounded-3" alt="CX Experts banner">
+              <img src="assets/img/banner-01.jpg" class="img-fluid w-100 rounded-3" alt="CX Experts banner" loading="lazy" decoding="async">
             </div>
             <p class="text-secondary small mb-0 mt-2">Clean foundations, fast wins, and practical automation—measured and iterated.</p>
           </div>
@@ -817,7 +817,7 @@
   <!-- Contact -->
   <section id="contact" class="section-block position-relative contact-scene" data-brand="digifycx">
     <div class="floating-orb" style="width:200px;height:200px;top:12%;left:4%;animation-duration:12s;"></div>
-    <div class="floating-orb" style="width:180px;height:180px;bottom:10%;right:6%;animation-duration:10s;"></div>
+    <div class="floating-orb orb-mobile-hide" style="width:180px;height:180px;bottom:10%;right:6%;animation-duration:10s;"></div>
     <div class="container position-relative" style="z-index:1;">
       <div class="chapter-label reveal" data-reveal="left">Chapter 07 - Final Scene</div>
       <div class="row g-4 align-items-start">
@@ -848,7 +848,7 @@
               </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-12 col-md-6">
               <div class="contact-card glass h-100">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                   <h6 class="mb-0 fw-bold">CX Experts</h6>
@@ -862,7 +862,7 @@
               </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-12 col-md-6">
               <div class="contact-card glass h-100">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                   <h6 class="mb-0 fw-bold">digify BPO</h6>
@@ -878,7 +878,7 @@
               </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-12 col-md-6">
               <div class="contact-card glass h-100">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                   <h6 class="mb-0 fw-bold">Outbound CX</h6>
@@ -889,7 +889,7 @@
               </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-12 col-md-6">
               <div class="contact-card glass h-100">
                 <div class="d-flex justify-content-between align-items-center mb-2">
                   <h6 class="mb-0 fw-bold">CX Leads</h6>
@@ -906,17 +906,17 @@
           <div class="glass p-4">
             <form id="contact-form" novalidate>
               <div class="row g-3">
-                <div class="col-md-6">
+                <div class="col-12 col-md-6">
                   <label class="form-label" for="name">Name</label>
                   <input id="name" name="name" type="text" class="form-control" placeholder="Your name" required>
                   <div class="invalid-feedback">Please add your name.</div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-12 col-md-6">
                   <label class="form-label" for="company">Company</label>
                   <input id="company" name="company" type="text" class="form-control" placeholder="Your company" required>
                   <div class="invalid-feedback">Company is required.</div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-12 col-md-6">
                   <label class="form-label" for="email">Email</label>
                   <input id="email" name="email" type="email" class="form-control" placeholder="you@example.com" required>
                   <div class="invalid-feedback">Enter a valid email.</div>
@@ -926,9 +926,12 @@
                   <textarea id="message" name="message" class="form-control" rows="4" placeholder="Share a few lines about your scene." required></textarea>
                   <div class="invalid-feedback">Tell us what you need.</div>
                 </div>
-                <div class="col-12 d-flex justify-content-between align-items-center">
-                  <span class="text-secondary small">Based in Umhlanga — 1 Umhlanga Ridge Boulevard, Lunar Row, Umhlanga New Town Centre, uMhlanga, 4319</span>
-                  <button type="submit" class="btn btn-primary px-4">Send</button>
+                <div class="col-12 d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                  <span class="text-secondary small">Based in Umhlanga - 1 Umhlanga Ridge Boulevard, Lunar Row, Umhlanga New Town Centre, uMhlanga, 4319</span>
+                  <button type="submit" class="btn btn-primary px-4 w-100 w-md-auto">
+                    <span class="btn-label">Send</span>
+                    <span class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+                  </button>
                 </div>
               </div>
             </form>
@@ -949,7 +952,7 @@
           <p class="text-secondary small mb-2">Produced by: digify CX Group. Soundtrack by real support queues and real outcomes.</p>
           <p class="text-secondary small mb-0">Special thanks: You, the audience. Fade to black—then back to hero.</p>
         </div>
-        <div class="col-md-4 text-md-end reveal" data-reveal="right">
+        <div class="col-md-4 text-md-end reveal d-flex flex-column align-items-start align-items-md-end gap-2" data-reveal="right">
           <a href="#hero" class="btn btn-outline-light">Back to top</a>
         </div>
       </div>
