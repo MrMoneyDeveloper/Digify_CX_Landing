@@ -1,22 +1,10 @@
 :root {
-  --cx-primary: #6F29B1;
-  --cx-light: #F9F2FD;
-  --cx-yellow: #E3F89D;
-  --cx-shade: #CBBFD2;
-  --bpo-primary: #A0ADD6;
-  --bpo-dark: #1F1E3A;
-  --bpo-accent: #78EED6;
   --brand-cxleads: #E3F89D;
-  --brand-cxleads-dark: #C9E456;
   --brand-digifybpo: #78EED6;
-  --brand-digifybpo-dark: #2A9E8F;
   --brand-outbound: #00D9FF;
-  --brand-outbound-dark: #00A8CC;
   --brand-cxexperts: #6F29B1;
-  --brand-cxexperts-dark: #4A1A6F;
   --brand-digifycx: linear-gradient(135deg, #E3F89D, #78EED6, #00D9FF, #6F29B1);
   --text-light: #FFFFFF;
-  --text-dark: #000000;
   --bg-space: #141f4f;
   --page-bg: var(--bg-space);
   --page-bloom-1: rgba(62,195,247,0.24);
@@ -245,7 +233,21 @@ body.mobile-performance .floating-orb {
   background: linear-gradient(120deg, var(--surface-hero-a), var(--surface-hero-b));
   transition: background var(--theme-transition);
 }
-#hero-vanta { position:absolute; top:0; left:0; right:0; bottom:0; }
+#hero-vanta {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+#hero-vanta canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
 .hero-overlay {
   position:absolute;
   top:0;

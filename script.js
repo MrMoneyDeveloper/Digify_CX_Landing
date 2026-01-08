@@ -270,20 +270,58 @@ document.addEventListener('DOMContentLoaded', () => {
   let vantaEffect = null;
   const heroVantaEl = document.getElementById('hero-vanta');
   let heroInView = true;
+  let vantaRetryId = null;
+  const supportsWebGL = () => {
+    try {
+      const canvas = document.createElement('canvas');
+      return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+    } catch (err) {
+      return false;
+    }
+  };
+  const canUseWebGL = supportsWebGL();
+  const canUseVanta = () => {
+    if (!heroVantaEl) return false;
+    if (prefersReduceMotion) return false;
+    return canUseWebGL;
+  };
+  const getVantaOptions = () => ({
+    el: heroVantaEl,
+    // Keep Vanta enabled on smaller screens for visual consistency.
+    // We only skip when reduced-motion is requested or WebGL is unavailable.
+    mouseControls: !isSmall,
+    touchControls: !isSmall,
+    gyroControls: false,
+    minHeight: 200.00,
+    minWidth: 200.00,
+    skyColor: 0x3ec3f7,
+    sunColor: 0xba18ff,
+    sunlightColor: 0xff5c30
+  });
+  const scheduleVantaRetry = () => {
+    if (vantaRetryId) return;
+    vantaRetryId = window.setTimeout(() => {
+      vantaRetryId = null;
+      initVanta();
+    }, 200);
+  };
   const initVanta = () => {
-    if (vantaEffect || prefersReduceMotion || isSmall) return;
-    if (!window.VANTA || !heroVantaEl) return;
-    vantaEffect = window.VANTA.CLOUDS({
-      el: heroVantaEl,
-      mouseControls: true,
-      touchControls: true,
-      gyroControls: false,
-      minHeight: 200.00,
-      minWidth: 200.00,
-      skyColor: 0x3ec3f7,
-      sunColor: 0xba18ff,
-      sunlightColor: 0xff5c30
-    });
+    if (vantaEffect || !heroInView || !canUseVanta()) return;
+    if (!window.VANTA || !window.VANTA.CLOUDS) {
+      // Fail gracefully if Vanta hasn't loaded yet.
+      scheduleVantaRetry();
+      return;
+    }
+    const rect = heroVantaEl.getBoundingClientRect();
+    if (!rect.width || !rect.height) {
+      scheduleVantaRetry();
+      return;
+    }
+    try {
+      vantaEffect = window.VANTA.CLOUDS(getVantaOptions());
+    } catch (err) {
+      vantaEffect = null;
+    }
   };
   const destroyVanta = () => {
     if (!vantaEffect) return;
@@ -291,13 +329,17 @@ document.addEventListener('DOMContentLoaded', () => {
     vantaEffect = null;
   };
   const updateVanta = () => {
-    if (!heroInView || prefersReduceMotion || isSmall) {
+    if (!heroInView || !canUseVanta()) {
       destroyVanta();
       return;
+    }
+    if (vantaEffect && typeof vantaEffect.resize === 'function') {
+      vantaEffect.resize();
     }
     initVanta();
   };
   updateVanta();
+  window.addEventListener('load', updateVanta);
   if (hero) {
     const heroObserver = new IntersectionObserver(([entry]) => {
       heroInView = entry.isIntersecting;
@@ -315,7 +357,8 @@ document.addEventListener('DOMContentLoaded', () => {
       scrollSpy.dispose();
       scrollSpy = new bootstrap.ScrollSpy(document.body, { target: '#mainNav', offset: getScrollOffset() });
     }
-    if (wasSmall !== isSmall) updateVanta();
+    if (wasSmall !== isSmall) destroyVanta();
+    updateVanta();
   };
   window.addEventListener('resize', handleResize);
 
