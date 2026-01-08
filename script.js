@@ -46,11 +46,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Brand focus mode (scroll + click lock)
   const brandMap = {
-    digifycx:  { primary:"#3ec3f7", accent:"#ba18ff", soft:"#EAFBFF", bg1:"#172a68", bg2:"#0b1032" },
-    cxexperts: { primary:"#6F29B1", accent:"#E3F89D", soft:"#F9F2FD", bg1:"#2b0f52", bg2:"#0d0b1c" },
-    digifybpo: { primary:"#A0ADD6", accent:"#78EED6", soft:"#E7EDFF", bg1:"#1F1E3A", bg2:"#0c102c" },
-    outboundcx:{ primary:"#1F1E3A", accent:"#78EED6", soft:"#E6FFFA", bg1:"#0b1436", bg2:"#1F1E3A" },
-    cxleads:   { primary:"#C9FF4A", accent:"#6F29B1", soft:"#F6FFE0", bg1:"#0b2d1a", bg2:"#16123d" }
+    digifycx:  { primary:"#00D9FF", accent:"#6F29B1", soft:"#EAFBFF", bg1:"#172a68", bg2:"#0b1032" },
+    cxexperts: { primary:"#6F29B1", accent:"#4A1A6F", soft:"#F9F2FD", bg1:"#2b0f52", bg2:"#0d0b1c" },
+    digifybpo: { primary:"#78EED6", accent:"#2A9E8F", soft:"#E7EDFF", bg1:"#1F1E3A", bg2:"#0c102c" },
+    outboundcx:{ primary:"#00D9FF", accent:"#00A8CC", soft:"#E6FFFA", bg1:"#0b1436", bg2:"#1F1E3A" },
+    cxleads:   { primary:"#E3F89D", accent:"#C9E456", soft:"#F6FFE0", bg1:"#0b2d1a", bg2:"#16123d" }
   };
   const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
   const hexToRgb = (hex) => {

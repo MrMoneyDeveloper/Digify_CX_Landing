@@ -6,19 +6,28 @@
   --bpo-primary: #A0ADD6;
   --bpo-dark: #1F1E3A;
   --bpo-accent: #78EED6;
+  --brand-cxleads: #E3F89D;
+  --brand-cxleads-dark: #C9E456;
+  --brand-digifybpo: #78EED6;
+  --brand-digifybpo-dark: #2A9E8F;
+  --brand-outbound: #00D9FF;
+  --brand-outbound-dark: #00A8CC;
+  --brand-cxexperts: #6F29B1;
+  --brand-cxexperts-dark: #4A1A6F;
+  --brand-digifycx: linear-gradient(135deg, #E3F89D, #78EED6, #00D9FF, #6F29B1);
   --text-light: #FFFFFF;
   --text-dark: #000000;
   --bg-space: #141f4f;
   --page-bg: var(--bg-space);
   --page-bloom-1: rgba(62,195,247,0.24);
   --page-bloom-2: rgba(186,24,255,0.21);
-  --brand-primary: #3ec3f7;
-  --brand-accent: #ba18ff;
+  --brand-primary: #00D9FF;
+  --brand-accent: #6F29B1;
   --brand-soft: #EAFBFF;
   --brand-bg1: #172a68;
   --brand-bg2: #0b1032;
-  --brand-primary-a: rgba(62,195,247,0.28);
-  --brand-accent-a: rgba(186,24,255,0.28);
+  --brand-primary-a: rgba(0,217,255,0.28);
+  --brand-accent-a: rgba(111,41,177,0.28);
   --brand-soft-a: rgba(234,251,255,0.22);
   --accent: var(--brand-accent);
   --text-muted: rgba(235, 242, 255, 0.92);
@@ -271,6 +280,57 @@ body.mobile-performance .floating-orb {
   border-color: var(--brand-accent);
   color: #0b0d17;
   box-shadow: 0 0 0 1px var(--brand-accent), 0 0 26px var(--brand-accent-a);
+}
+.brand-pill[href="#brand-bpo"] {
+  border-color: var(--brand-digifybpo);
+  color: var(--brand-digifybpo);
+}
+.brand-pill[href="#brand-bpo"]:hover,
+.brand-pill[href="#brand-bpo"].is-active {
+  background: linear-gradient(135deg, var(--brand-digifybpo), rgba(120,238,214,0.2));
+  border-color: var(--brand-digifybpo);
+  color: #0b0d17;
+  box-shadow: 0 0 26px rgba(120,238,214,0.35);
+}
+.brand-pill[href="#brand-outbound"] {
+  border-color: var(--brand-outbound);
+  color: var(--brand-outbound);
+}
+.brand-pill[href="#brand-outbound"]:hover,
+.brand-pill[href="#brand-outbound"].is-active {
+  background: linear-gradient(135deg, var(--brand-outbound), rgba(0,217,255,0.2));
+  border-color: var(--brand-outbound);
+  color: #0b0d17;
+  box-shadow: 0 0 26px rgba(0,217,255,0.35);
+}
+.brand-pill[href="#brand-experts"] {
+  border-color: var(--brand-cxexperts);
+  color: var(--brand-cxexperts);
+}
+.brand-pill[href="#brand-experts"]:hover,
+.brand-pill[href="#brand-experts"].is-active {
+  background: linear-gradient(135deg, var(--brand-cxexperts), rgba(111,41,177,0.2));
+  border-color: var(--brand-cxexperts);
+  color: #f6f0ff;
+  box-shadow: 0 0 26px rgba(111,41,177,0.35);
+}
+.brand-pill[href="#brand-leads"] {
+  border-color: var(--brand-cxleads);
+  color: var(--brand-cxleads);
+}
+.brand-pill[href="#brand-leads"]:hover,
+.brand-pill[href="#brand-leads"].is-active {
+  background: linear-gradient(135deg, var(--brand-cxleads), rgba(227,248,157,0.2));
+  border-color: var(--brand-cxleads);
+  color: #0b0d17;
+  box-shadow: 0 0 26px rgba(227,248,157,0.35);
+}
+.brand-pill[href="#about"]:hover,
+.brand-pill[href="#about"].is-active {
+  background: var(--brand-digifycx);
+  border-color: transparent;
+  color: #0b0d17;
+  box-shadow: 0 0 26px rgba(120,238,214,0.35);
 }
 
 .capability {
@@ -530,6 +590,118 @@ body.cinema .letterbox::before, body.cinema .letterbox::after{ opacity:1; }
 }
 [data-brand][data-brand-active="true"]:not(#hero)::before { opacity: 1; }
 [data-brand] > .container, [data-brand] > .container-fluid { position: relative; z-index: 2; }
+[data-brand="digifycx"]::before { background: var(--brand-digifycx); }
+[data-brand="digifybpo"] {
+  border-left: 4px solid var(--brand-digifybpo);
+}
+[data-brand="digifybpo"]::before {
+  background: radial-gradient(circle at 20% 20%, rgba(120,238,214,0.18), transparent 55%), linear-gradient(135deg, #1f1e3a, #0c102c);
+}
+[data-brand="digifybpo"] h2,
+[data-brand="digifybpo"] h3 {
+  color: var(--brand-digifybpo);
+  text-shadow: 0 0 20px rgba(120,238,214,0.3);
+}
+[data-brand="digifybpo"] .logo { filter: drop-shadow(0 0 14px rgba(120,238,214,0.35)); }
+[data-brand="digifybpo"] .glass {
+  background: rgba(120,238,214,0.08);
+  border-color: rgba(120,238,214,0.45);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.22), 0 0 20px rgba(120,238,214,0.2), inset 0 1px 0 rgba(255,255,255,0.12);
+}
+[data-brand="digifybpo"] .btn-primary {
+  background: var(--brand-digifybpo);
+  border-color: var(--brand-digifybpo);
+  color: #0b0d17;
+  box-shadow: 0 12px 26px rgba(120,238,214,0.3);
+}
+[data-brand="digifybpo"] .pulse-line {
+  background: linear-gradient(90deg, transparent, var(--brand-digifybpo), transparent);
+  filter: drop-shadow(0 0 18px rgba(120,238,214,0.4));
+}
+[data-brand="digifybpo"] .orbit-card::after {
+  background: radial-gradient(circle at 50% 50%, var(--brand-digifybpo), transparent 55%);
+}
+[data-brand="outboundcx"] {
+  border-left: 4px solid var(--brand-outbound);
+}
+[data-brand="outboundcx"]::before {
+  background: radial-gradient(circle at 70% 20%, rgba(0,217,255,0.18), transparent 55%), linear-gradient(135deg, #0e1220, #1f1e3a);
+}
+[data-brand="outboundcx"] h2,
+[data-brand="outboundcx"] h3 {
+  color: var(--brand-outbound);
+  text-shadow: 0 0 20px rgba(0,217,255,0.3);
+}
+[data-brand="outboundcx"] .logo { filter: drop-shadow(0 0 14px rgba(0,217,255,0.35)); }
+[data-brand="outboundcx"] .glass {
+  background: rgba(0,217,255,0.08);
+  border-color: rgba(0,217,255,0.45);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.22), 0 0 20px rgba(0,217,255,0.2), inset 0 1px 0 rgba(255,255,255,0.12);
+}
+[data-brand="outboundcx"] .btn-primary {
+  background: var(--brand-outbound);
+  border-color: var(--brand-outbound);
+  color: #041018;
+  box-shadow: 0 12px 26px rgba(0,217,255,0.3);
+}
+[data-brand="outboundcx"] .orbit-card::after {
+  background: radial-gradient(circle at 50% 50%, var(--brand-outbound), transparent 55%);
+}
+[data-brand="cxexperts"] {
+  border-left: 4px solid var(--brand-cxexperts);
+}
+[data-brand="cxexperts"]::before {
+  background: radial-gradient(circle at 30% 20%, rgba(111,41,177,0.2), transparent 55%), linear-gradient(135deg, #1a0f28, #120b1e);
+}
+[data-brand="cxexperts"] h2,
+[data-brand="cxexperts"] h3 {
+  color: var(--brand-cxexperts);
+  text-shadow: 0 0 20px rgba(111,41,177,0.3);
+}
+[data-brand="cxexperts"] .logo { filter: drop-shadow(0 0 14px rgba(111,41,177,0.35)); }
+[data-brand="cxexperts"] .glass {
+  background: rgba(111,41,177,0.1);
+  border-color: rgba(111,41,177,0.45);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.22), 0 0 20px rgba(111,41,177,0.2), inset 0 1px 0 rgba(255,255,255,0.12);
+}
+[data-brand="cxexperts"] .btn-primary {
+  background: var(--brand-cxexperts);
+  border-color: var(--brand-cxexperts);
+  color: #f6f0ff;
+  box-shadow: 0 12px 26px rgba(111,41,177,0.3);
+}
+[data-brand="cxexperts"] .orbit-card::after {
+  background: radial-gradient(circle at 50% 50%, var(--brand-cxexperts), transparent 55%);
+}
+[data-brand="cxexperts"] .capability {
+  border-left: 3px solid var(--brand-cxexperts);
+}
+[data-brand="cxleads"] {
+  border-left: 4px solid var(--brand-cxleads);
+}
+[data-brand="cxleads"]::before {
+  background: radial-gradient(circle at 60% 20%, rgba(227,248,157,0.2), transparent 55%), linear-gradient(135deg, #0d0f18, #11192c);
+}
+[data-brand="cxleads"] h2,
+[data-brand="cxleads"] h3 {
+  color: var(--brand-cxleads);
+  text-shadow: 0 0 20px rgba(227,248,157,0.3);
+}
+[data-brand="cxleads"] .logo { filter: drop-shadow(0 0 14px rgba(227,248,157,0.35)); }
+[data-brand="cxleads"] .glass {
+  background: rgba(227,248,157,0.08);
+  border-color: rgba(227,248,157,0.45);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.22), 0 0 20px rgba(227,248,157,0.2), inset 0 1px 0 rgba(255,255,255,0.12);
+}
+[data-brand="cxleads"] .btn-primary {
+  background: var(--brand-cxleads);
+  border-color: var(--brand-cxleads);
+  color: #0b0d17;
+  box-shadow: 0 12px 26px rgba(227,248,157,0.3);
+}
+[data-brand="cxleads"] .orbit-card::after {
+  background: radial-gradient(circle at 50% 50%, var(--brand-cxleads), transparent 55%);
+}
 
 body.reduced-motion .floating-orb,
 body.reduced-motion .orbit-card::after,
@@ -603,6 +775,13 @@ body.mobile-performance .orbit-item { animation-duration: 20s; }
   .chapter { padding: 96px 0; min-height: auto; }
   .navbar-collapse { padding-top: 12px; }
   .floating-orb { width: 140px !important; height: 140px !important; }
+  [data-brand="digifybpo"],
+  [data-brand="outboundcx"],
+  [data-brand="cxexperts"],
+  [data-brand="cxleads"] {
+    border-left-width: 3px;
+    background-blend-mode: overlay;
+  }
   .floating-hud {
     font-size: 0.75rem;
     right: auto !important;
