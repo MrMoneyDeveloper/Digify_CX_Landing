@@ -271,10 +271,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const heroVantaEl = document.getElementById('hero-vanta');
   let heroInView = true;
   let vantaRetryId = null;
+  const vantaDebug = true;
   const supportsWebGL = () => {
     try {
       const canvas = document.createElement('canvas');
-      return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
+      const opts = { powerPreference: 'high-performance' };
+      const hasWebGL = !!(window.WebGLRenderingContext || window.WebGL2RenderingContext);
+      if (!hasWebGL) return false;
+      return !!(
+        canvas.getContext('webgl2', opts) ||
+        canvas.getContext('webgl', opts) ||
+        canvas.getContext('experimental-webgl', opts)
+      );
     } catch (err) {
       return false;
     }
@@ -285,10 +293,25 @@ document.addEventListener('DOMContentLoaded', () => {
     if (prefersReduceMotion) return false;
     return canUseWebGL;
   };
+  const logVantaState = (label) => {
+    if (!vantaDebug || !window.console || typeof console.debug !== 'function') return;
+    const heroSize = heroVantaEl ? `${heroVantaEl.offsetWidth}x${heroVantaEl.offsetHeight}` : 'N/A';
+    console.debug('Vanta init check:', {
+      label,
+      vantaExists: !!window.VANTA,
+      cloudsExists: !!(window.VANTA && window.VANTA.CLOUDS),
+      threeExists: !!window.THREE,
+      heroElement: !!heroVantaEl,
+      heroSize,
+      isSmall,
+      prefersReduceMotion
+    });
+  };
   const getVantaOptions = () => ({
     el: heroVantaEl,
     // Keep Vanta enabled on smaller screens for visual consistency.
     // We only skip when reduced-motion is requested or WebGL is unavailable.
+    // On small screens, disable interaction to avoid extra work.
     mouseControls: !isSmall,
     touchControls: !isSmall,
     gyroControls: false,
@@ -307,8 +330,14 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   const initVanta = () => {
     if (vantaEffect || !heroInView || !canUseVanta()) return;
+    logVantaState('init');
     if (!window.VANTA || !window.VANTA.CLOUDS) {
       // Fail gracefully if Vanta hasn't loaded yet.
+      scheduleVantaRetry();
+      return;
+    }
+    if (!window.THREE) {
+      // Some browsers need the THREE global before Vanta can attach.
       scheduleVantaRetry();
       return;
     }
@@ -321,6 +350,9 @@ document.addEventListener('DOMContentLoaded', () => {
       vantaEffect = window.VANTA.CLOUDS(getVantaOptions());
     } catch (err) {
       vantaEffect = null;
+      if (vantaDebug && window.console && typeof console.warn === 'function') {
+        console.warn('Vanta init failed:', err);
+      }
     }
   };
   const destroyVanta = () => {
@@ -361,6 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateVanta();
   };
   window.addEventListener('resize', handleResize);
+  window.addEventListener('orientationchange', handleResize);
 
   const stickyCta = document.querySelector('.sticky-cta');
   const toggleSticky = () => {

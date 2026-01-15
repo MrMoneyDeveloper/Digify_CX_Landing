@@ -227,6 +227,7 @@ body.mobile-performance .floating-orb {
   position: relative;
   min-height: 100vh;
   min-height: 100svh;
+  height: -webkit-fill-available;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -874,9 +875,14 @@ body.mobile-performance .orbit-item { animation-duration: 20s; }
   }
 }
 @media (max-width: 575.98px) {
-  #hero { padding: 60px 20px; }
+  #hero {
+    padding: 20px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
   .section-block { padding: 40px 16px; }
-  .hero-content { padding: 0 16px; }
+  .hero-content { padding: 0 16px; overflow-x: hidden; }
   .container,
   .container-fluid { padding-left: 16px; padding-right: 16px; max-width: 100%; }
   .row { --bs-gutter-x: 0.5rem; }
@@ -945,4 +951,11 @@ body.mobile-performance .orbit-item { animation-duration: 20s; }
     font-size: 0.6rem;
     max-width: calc(100% - 12px);
   }
+}
+@media (max-width: 767.98px) and (orientation: portrait) {
+  #hero {
+    min-height: 100svh;
+    padding-top: calc(var(--nav-offset) + 20px);
+  }
+  .hero-content { padding-bottom: 40px; }
 }
