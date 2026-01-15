@@ -1493,22 +1493,27 @@ body.mobile-performance .orbit-item {
     opacity: 0;
   }
 
-  /* Expandable trigger */
-  .capability:not(.collapsed),
-  .glass.p-3:not(.collapsed),
-  .contact-card:not(.collapsed) {
-    cursor: pointer;
-  }
-
+  /* Expandable indicator - subtle + sign */
   .capability::after,
   .glass.p-3::after,
   .contact-card::after {
-    content: "📌";
+    content: "+";
     position: absolute;
     top: 12px;
     right: 14px;
-    font-size: 14px;
-    opacity: 0.6;
+    font-size: 18px;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.35);
+    opacity: 1;
+    transition: opacity 0.3s ease, color 0.3s ease;
+  }
+
+  /* Expanded indicator - rotate + to × */
+  .capability:not(.collapsed)::after,
+  .glass.p-3:not(.collapsed)::after,
+  .contact-card:not(.collapsed)::after {
+    content: "×";
+    color: rgba(255, 255, 255, 0.5);
   }
 }
 
