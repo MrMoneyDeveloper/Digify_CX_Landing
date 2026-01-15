@@ -267,10 +267,12 @@ document.addEventListener('DOMContentLoaded', () => {
     barObserver.observe(hero);
   }
 
+  // ========== VANTA.JS INITIALIZATION (CHROME FIX) ==========
   let vantaEffect = null;
   const heroVantaEl = document.getElementById('hero-vanta');
   let heroInView = true;
   const vantaDebug = true;
+
   const supportsWebGL = () => {
     try {
       const canvas = document.createElement('canvas');
@@ -286,140 +288,120 @@ document.addEventListener('DOMContentLoaded', () => {
       return false;
     }
   };
+
   const canUseWebGL = supportsWebGL();
+
   const logVantaState = (label) => {
-    if (!vantaDebug || !window.console || typeof console.log !== 'function') return;
-    const heroSize = heroVantaEl ? `${heroVantaEl.offsetWidth}x${heroVantaEl.offsetHeight}` : 'N/A';
-    console.log('Vanta init check:', {
+    if (!vantaDebug) return;
+    console.log('Vanta:', {
       label,
       vantaExists: !!window.VANTA,
       cloudsExists: !!(window.VANTA && window.VANTA.CLOUDS),
       threeExists: !!window.THREE,
       heroElement: !!heroVantaEl,
-      heroSize,
+      heroSize: heroVantaEl ? `${heroVantaEl.offsetWidth}x${heroVantaEl.offsetHeight}` : 'N/A',
       isSmall,
       prefersReduceMotion
     });
   };
-  const setHeroVantaSize = () => {
+
+  const ensureHeroVantaSize = () => {
     if (!heroVantaEl) return false;
-    const heroSection = heroVantaEl.closest('#hero');
-    if (!heroSection) return true;
+    const heroSection = heroVantaEl.closest('#hero') || hero;
+    if (!heroSection) return false;
+
+    // Force synchronous layout computation
     const rect = heroSection.getBoundingClientRect();
-    if (!rect.width || !rect.height) return false;
-    heroVantaEl.style.width = `${rect.width}px`;
-    heroVantaEl.style.height = `${rect.height}px`;
+    const w = Math.max(window.innerWidth, rect.width || 0);
+    const h = Math.max(window.innerHeight, rect.height || 0);
+
+    if (w < 200 || h < 200) return false;
+
+    heroVantaEl.style.width = `${w}px`;
+    heroVantaEl.style.height = `${h}px`;
+    heroVantaEl.style.display = 'block';
+    heroVantaEl.style.position = 'absolute';
+    heroVantaEl.style.top = '0';
+    heroVantaEl.style.left = '0';
+
     return true;
   };
+
   const initVanta = () => {
     if (vantaEffect) return;
-    if (prefersReduceMotion) {
-      if (vantaDebug && window.console && typeof console.log === 'function') {
-        console.log(`Vanta skipped: reduces motion=${prefersReduceMotion}`);
-      }
+    if (prefersReduceMotion || !heroInView) return;
+    if (!heroVantaEl) return;
+    if (!canUseWebGL) return;
+    if (!window.VANTA || !window.VANTA.CLOUDS || !window.THREE) return;
+
+    logVantaState('attempting-init');
+
+    if (!ensureHeroVantaSize()) {
+      console.warn('Vanta: Hero size not ready');
       return;
     }
-    if (!heroVantaEl) {
-      if (vantaDebug && window.console && typeof console.warn === 'function') {
-        console.warn('Vanta: #hero-vanta element not found');
-      }
-      return;
-    }
-    if (!canUseWebGL) {
-      if (vantaDebug && window.console && typeof console.warn === 'function') {
-        console.warn('Vanta: WebGL not available');
-      }
-      return;
-    }
-    logVantaState('init');
-    if (!window.VANTA) {
-      if (vantaDebug && window.console && typeof console.warn === 'function') {
-        console.warn('Vanta: window.VANTA not available yet');
-      }
-      return;
-    }
-    if (!window.VANTA.CLOUDS) {
-      if (vantaDebug && window.console && typeof console.warn === 'function') {
-        console.warn('Vanta.CLOUDS not available');
-      }
-      return;
-    }
-    if (!window.THREE) {
-      if (vantaDebug && window.console && typeof console.warn === 'function') {
-        console.warn('Vanta: window.THREE not available');
-      }
-      return;
-    }
-    if (!setHeroVantaSize()) {
-      if (vantaDebug && window.console && typeof console.warn === 'function') {
-        console.warn('Vanta: hero size not ready');
-      }
-      return;
-    }
+
     try {
       vantaEffect = window.VANTA.CLOUDS({
         el: heroVantaEl,
         mouseControls: !isSmall,
         touchControls: !isSmall,
         gyroControls: false,
-        minHeight: 200.00,
-        minWidth: 200.00,
+        minHeight: 200,
+        minWidth: 200,
         skyColor: 0x3ec3f7,
         sunColor: 0xba18ff,
         sunlightColor: 0xff5c30,
-        speed: 0.5,
+        speed: isSmall ? 0.3 : 0.5,
         zoom: 1.0
       });
-      if (vantaDebug && window.console && typeof console.log === 'function') {
-        console.log('Vanta initialized successfully');
-      }
+      console.log('✅ Vanta initialized');
     } catch (err) {
+      console.error('❌ Vanta init failed:', err);
       vantaEffect = null;
-      if (window.console && typeof console.error === 'function') {
-        console.error('Vanta initialization failed:', err);
-      }
     }
   };
+
   const destroyVanta = () => {
     if (!vantaEffect) return;
     try {
       vantaEffect.destroy();
       vantaEffect = null;
-      if (vantaDebug && window.console && typeof console.log === 'function') {
-        console.log('Vanta destroyed');
-      }
+      console.log('Vanta destroyed');
     } catch (err) {
-      if (vantaDebug && window.console && typeof console.warn === 'function') {
-        console.warn('Error destroying Vanta:', err);
-      }
+      console.warn('Error destroying Vanta:', err);
     }
   };
+
   const updateVanta = () => {
     if (!heroInView || prefersReduceMotion) {
       destroyVanta();
       return;
     }
-    const sizeReady = setHeroVantaSize();
-    if (vantaEffect && sizeReady && typeof vantaEffect.resize === 'function') {
-      vantaEffect.resize();
+    if (vantaEffect && typeof vantaEffect.resize === 'function') {
+      if (ensureHeroVantaSize()) {
+        vantaEffect.resize();
+      }
+    } else {
+      initVanta();
     }
-    initVanta();
   };
-  window.setTimeout(() => {
-    if (vantaDebug && window.console && typeof console.log === 'function') {
-      console.log('Checking Vanta availability:', {
-        vantaLoaded: !!window.VANTA,
-        cloudsLoaded: !!(window.VANTA && window.VANTA.CLOUDS),
-        threeLoaded: !!window.THREE
-      });
-    }
+
+  // CRITICAL: Delay Vanta init to ensure DOM fully painted + scripts loaded
+  const vantaInitDelay = setTimeout(() => {
+    console.log('Vanta lib check:', {
+      vantaLoaded: !!window.VANTA,
+      cloudsLoaded: !!(window.VANTA && window.VANTA.CLOUDS),
+      threeLoaded: !!window.THREE
+    });
     updateVanta();
-  }, 100);
+  }, 250);
+
   if (hero) {
     const heroObserver = new IntersectionObserver(([entry]) => {
       heroInView = entry.isIntersecting;
       updateVanta();
-    }, { threshold: 0.1 });
+    }, { threshold: 0.05 });
     heroObserver.observe(hero);
   }
 
@@ -433,10 +415,13 @@ document.addEventListener('DOMContentLoaded', () => {
       scrollSpy = new bootstrap.ScrollSpy(document.body, { target: '#mainNav', offset: getScrollOffset() });
     }
     if (wasSmall !== isSmall) destroyVanta();
-    updateVanta();
+    setTimeout(updateVanta, 300);
   };
+
   window.addEventListener('resize', handleResize);
-  window.addEventListener('orientationchange', handleResize);
+  window.addEventListener('orientationchange', () => {
+    setTimeout(handleResize, 500);
+  });
 
   const stickyCta = document.querySelector('.sticky-cta');
   const toggleSticky = () => {
@@ -468,8 +453,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const showToast = (msg) => {
     const toast = document.createElement('div');
     toast.className = 'toast align-items-center text-bg-dark border-0 show';
-    toast.setAttribute('role','alert');
-    toast.innerHTML = '<div class="d-flex"><div class="toast-body">'+msg+'</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>';
+    toast.setAttribute('role', 'alert');
+    toast.innerHTML = '<div class="d-flex"><div class="toast-body">' + msg + '</div><button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button></div>';
     toastContainer.appendChild(toast);
     setTimeout(() => toast.remove(), 3200);
   };
