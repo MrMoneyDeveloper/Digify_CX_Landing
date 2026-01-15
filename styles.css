@@ -613,6 +613,42 @@ body.mobile-performance .floating-orb {
   height: 100%;
   transition: background var(--theme-transition), border-color var(--theme-transition);
 }
+.capability[data-bs-toggle="collapse"],
+.contact-card-toggle[data-bs-toggle="collapse"],
+.card[data-bs-toggle="collapse"] {
+  position: relative;
+  cursor: pointer;
+  padding-right: 2.5rem;
+}
+.capability[data-bs-toggle="collapse"]::after,
+.contact-card-toggle[data-bs-toggle="collapse"]::after,
+.card[data-bs-toggle="collapse"]::after {
+  content: "+";
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  font-size: 18px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.6);
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+.capability[data-bs-toggle="collapse"]:not(.collapsed)::after,
+.contact-card-toggle[data-bs-toggle="collapse"]:not(.collapsed)::after,
+.card[data-bs-toggle="collapse"]:not(.collapsed)::after {
+  content: "\00d7";
+  color: rgba(255, 255, 255, 0.9);
+}
+.contact-card-toggle {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  display: block;
+  width: 100%;
+  text-align: left;
+}
 
 .story-section {
   position: relative;
@@ -1460,50 +1496,12 @@ body.mobile-performance .orbit-item {
     max-width: calc(100% - 20px);
   }
 
-  /* MOBILE COLLAPSE CARD SETUP */
-  .capability,
-  .glass.p-3,
-  .contact-card {
-    position: relative;
-    cursor: pointer;
-  }
-
-  /* Indicator: Show + when collapsed */
   .capability[data-bs-toggle="collapse"]::after,
-  .glass.p-3[data-bs-toggle="collapse"]::after,
-  .contact-card[data-bs-toggle="collapse"]::after {
-    content: "+";
-    position: absolute;
-    top: 12px;
-    right: 14px;
+  .contact-card-toggle[data-bs-toggle="collapse"]::after,
+  .card[data-bs-toggle="collapse"]::after {
+    top: 10px;
+    right: 12px;
     font-size: 18px;
-    font-weight: 300;
-    color: rgba(255, 255, 255, 0.35);
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  /* When expanded: show × */
-  .capability[data-bs-toggle="collapse"].collapsed::after,
-  .glass.p-3[data-bs-toggle="collapse"].collapsed::after,
-  .contact-card[data-bs-toggle="collapse"].collapsed::after {
-    content: "×";
-    color: rgba(255, 255, 255, 0.5);
-  }
-
-  /* Hide/show content based on collapse state */
-  .capability .collapse,
-  .glass.p-3 .collapse,
-  .contact-card .collapse {
-    max-height: 0;
-    overflow: hidden;
-  }
-
-  .capability .collapse.show,
-  .glass.p-3 .collapse.show,
-  .contact-card .collapse.show {
-    max-height: 500px;
-    overflow: visible;
   }
 }
 
