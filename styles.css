@@ -46,8 +46,6 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: var(--nav-offset);
-  width: 100vw;
-  overflow-x: hidden;
 }
 
 body {
@@ -58,18 +56,18 @@ body {
     var(--page-bg);
   color: var(--text-light);
   line-height: 1.6;
-  overflow-x: hidden;
   position: relative;
   padding-top: var(--nav-offset);
-  width: 100vw;
-  margin: 0;
-  padding: 0;
   display: flex;
   flex-direction: column;
   scroll-behavior: smooth;
   word-break: break-word;
   overflow-wrap: break-word;
   transition: background var(--theme-transition), color var(--theme-transition);
+  margin: 0;
+  padding-left: 0;
+  padding-right: 0;
+  min-height: 100vh;
 }
 
 img {
@@ -118,19 +116,12 @@ section, header {
 
 .page-wrap {
   width: 100%;
-  max-width: 100vw;
   overflow-x: hidden;
   flex: 1;
-  margin: 0;
-  padding: 0;
 }
 
 header, section, footer, .chapter {
   width: 100%;
-  max-width: 100vw;
-  overflow-x: hidden;
-  overflow-y: visible;
-  box-sizing: border-box;
   position: relative;
   margin: 0;
   padding-left: 0;
@@ -138,11 +129,11 @@ header, section, footer, .chapter {
 }
 
 .row {
+  --bs-gutter-x: 1.5rem;
+  --bs-gutter-y: 0;
   width: 100%;
-  max-width: 100%;
-  --bs-gutter-x: 1rem;
-  overflow-x: hidden;
-  margin: 0;
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .row > * {
@@ -156,6 +147,22 @@ header, section, footer, .chapter {
   word-break: break-word;
   padding-left: calc(var(--bs-gutter-x) * 0.5);
   padding-right: calc(var(--bs-gutter-x) * 0.5);
+}
+
+.container, .container-sm, .container-md, .container-lg, .container-xl, .container-xxl {
+  width: 100%;
+  padding-right: var(--bs-gutter-x, 0.75rem);
+  padding-left: var(--bs-gutter-x, 0.75rem);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.container-fluid {
+  width: 100%;
+  padding-right: var(--bs-gutter-x, 0.75rem);
+  padding-left: var(--bs-gutter-x, 0.75rem);
+  margin-right: auto;
+  margin-left: auto;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -1431,10 +1438,10 @@ body.mobile-performance .orbit-item {
   }
 
   .services-tabs {
-    margin-left: -4px;
-    margin-right: -4px;
-    padding-left: 4px;
-    padding-right: 4px;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
   }
 
   .orbit-zone {
@@ -1455,48 +1462,12 @@ body.mobile-performance .orbit-item {
 }
 
 @media (max-width: 575.98px) {
-  html, body {
-    width: 100vw;
-    overflow-x: hidden;
-  }
-
-  #hero {
-    padding: 0;
-    margin: 0;
-    width: 100%;
-    overflow-x: hidden;
-  }
-
   .section-block {
-    padding: 40px 16px;
+    padding: 40px 1rem;
   }
 
   .hero-content {
-    padding: 0 16px;
-    overflow-x: hidden;
-  }
-
-  .container,
-  .container-fluid {
-    padding-left: 0;
-    padding-right: 0;
-    width: 100%;
-    max-width: calc(100vw - 32px);
-    margin-left: 16px;
-    margin-right: 16px;
-  }
-
-  .row {
-    --bs-gutter-x: 0rem;
-    margin-left: 0;
-    margin-right: 0;
-  }
-
-  [class^="col-"], [class*=" col-"] {
-    max-width: 100%;
-    padding-left: 0;
-    padding-right: 0;
-    width: 100%;
+    padding: 0 1rem;
   }
 
   .floating-orb {
@@ -1505,7 +1476,7 @@ body.mobile-performance .orbit-item {
   }
 
   .banner-frame {
-    width: 90%;
+    width: 100%;
     max-width: 100%;
   }
 
@@ -1588,18 +1559,11 @@ body.mobile-performance .orbit-item {
 
 @media (min-width: 576px) and (max-width: 767.98px) {
   .section-block {
-    padding: 70px 20px;
-  }
-
-  .container,
-  .container-fluid {
-    padding-left: 20px;
-    padding-right: 20px;
-    max-width: 100%;
+    padding: 70px 1rem;
   }
 
   .banner-frame {
-    width: 95%;
+    width: 100%;
   }
 
   .glass {
@@ -1613,12 +1577,6 @@ body.mobile-performance .orbit-item {
   .btn-lg {
     padding: 12px 24px;
     font-size: 1rem;
-  }
-}
-
-@media (min-width: 576px) and (max-width: 991.98px) {
-  .banner-frame {
-    width: 95%;
   }
 }
 
