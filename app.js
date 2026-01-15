@@ -8,25 +8,33 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.querySelectorAll('.capability, .glass.p-3, .contact-card').forEach((card) => {
       if (isNowMobile) {
-        // On mobile: ensure collapsed state
+        // Force add collapsed class - strip any existing state first
+        card.classList.remove('expanded');
         card.classList.add('collapsed');
         
-        // Remove old listeners by cloning
+        // Remove old listeners by cloning to ensure clean state
         const newCard = card.cloneNode(true);
-        card.parentNode.replaceChild(newCard, card);
-        
-        // Add fresh click handler
-        newCard.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          newCard.classList.toggle('collapsed');
-        });
+        if (card.parentNode) {
+          card.parentNode.replaceChild(newCard, card);
+          
+          // Add fresh click handler
+          newCard.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            newCard.classList.toggle('collapsed');
+            newCard.classList.toggle('expanded');
+          }, false);
+        }
       } else {
         // On desktop: remove collapsed state
         card.classList.remove('collapsed');
+        card.classList.remove('expanded');
       }
     });
   };
+
+  // Initial setup on page load
+  setupCollapsibleCards();
 
   // Re-run on resize to handle mobile/desktop transitions
   let resizeTimer;
@@ -36,8 +44,6 @@ document.addEventListener('DOMContentLoaded', function () {
       setupCollapsibleCards();
     }, 150);
   });
-
-  setupCollapsibleCards();
 
   // Reveal animations on scroll
   const revealElements = document.querySelectorAll('[data-reveal]');
