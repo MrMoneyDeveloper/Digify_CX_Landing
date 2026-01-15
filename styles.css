@@ -1459,6 +1459,57 @@ body.mobile-performance .orbit-item {
     font-size: 0.75rem;
     max-width: calc(100% - 20px);
   }
+
+  /* MOBILE: Card spacing + collapsible content */
+  .row.g-3 > .col-md-4,
+  .row.g-3 > .col-md-6,
+  .row.g-3 > .col-12 {
+    margin-bottom: 12px;
+  }
+
+  .capability,
+  .glass.p-3,
+  .contact-card {
+    margin-bottom: 16px;
+  }
+
+  /* Hide descriptions by default on mobile */
+  .capability p,
+  .proof-tile,
+  .glass.p-3 p:not(.mb-0),
+  .glass.p-3 small,
+  .contact-card p {
+    max-height: 60px;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+  }
+
+  /* Collapsed state */
+  .capability.collapsed p,
+  .glass.p-3.collapsed p:not(.mb-0),
+  .glass.p-3.collapsed small,
+  .contact-card.collapsed p {
+    max-height: 0;
+    opacity: 0;
+  }
+
+  /* Expandable trigger */
+  .capability:not(.collapsed),
+  .glass.p-3:not(.collapsed),
+  .contact-card:not(.collapsed) {
+    cursor: pointer;
+  }
+
+  .capability::after,
+  .glass.p-3::after,
+  .contact-card::after {
+    content: "📌";
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    font-size: 14px;
+    opacity: 0.6;
+  }
 }
 
 @media (max-width: 575.98px) {
