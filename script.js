@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return isSmall;
   };
   setViewportFlags();
+  document.body.classList.add('js-enabled');
 
   if (prefersReduceMotion) {
     document.body.classList.add('reduced-motion');
@@ -21,6 +22,29 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }, { threshold: 0.15 });
     document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  }
+
+  const sectionTargets = Array.from(document.querySelectorAll('.section-block, .chapter, footer'));
+  const markSectionInView = () => {
+    const viewH = window.innerHeight || 1;
+    sectionTargets.forEach(sec => {
+      const rect = sec.getBoundingClientRect();
+      if (rect.top < viewH * 0.85 && rect.bottom > 0) sec.classList.add('section-in');
+    });
+  };
+  if (sectionTargets.length) {
+    if (prefersReduceMotion) {
+      sectionTargets.forEach(sec => sec.classList.add('section-in'));
+    } else {
+      markSectionInView();
+      document.body.classList.add('section-anim');
+      const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) entry.target.classList.add('section-in');
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+      sectionTargets.forEach(sec => sectionObserver.observe(sec));
+    }
   }
 
   const nav = document.getElementById('mainNav');
@@ -446,6 +470,75 @@ document.addEventListener('DOMContentLoaded', () => {
   } else if (storySection) {
     storySection.style.setProperty('--storyShift', '0');
   }
+
+  const sectionToggleButtons = Array.from(document.querySelectorAll('[data-section-toggle]'));
+  const setSectionToggleLabel = (btn, expanded) => {
+    const closedLabel = btn.getAttribute('data-label-closed') || 'More';
+    const openLabel = btn.getAttribute('data-label-open') || 'Less';
+    btn.textContent = expanded ? openLabel : closedLabel;
+  };
+  const openSectionPanel = (btn, panel) => {
+    panel.hidden = false;
+    panel.classList.add('is-open');
+    if (prefersReduceMotion) {
+      panel.style.maxHeight = 'none';
+    } else {
+      panel.style.maxHeight = '0px';
+      const targetHeight = panel.scrollHeight;
+      window.requestAnimationFrame(() => {
+        panel.style.maxHeight = `${targetHeight}px`;
+      });
+      const onEnd = (event) => {
+        if (event.propertyName !== 'max-height') return;
+        panel.style.maxHeight = 'none';
+        panel.removeEventListener('transitionend', onEnd);
+      };
+      panel.addEventListener('transitionend', onEnd);
+    }
+    btn.setAttribute('aria-expanded', 'true');
+    setSectionToggleLabel(btn, true);
+  };
+  const closeSectionPanel = (btn, panel) => {
+    panel.classList.remove('is-open');
+    btn.setAttribute('aria-expanded', 'false');
+    setSectionToggleLabel(btn, false);
+    if (prefersReduceMotion) {
+      panel.hidden = true;
+      panel.style.maxHeight = '0px';
+      return;
+    }
+    const startHeight = panel.scrollHeight;
+    panel.style.maxHeight = `${startHeight}px`;
+    window.requestAnimationFrame(() => {
+      panel.style.maxHeight = '0px';
+    });
+    const onEnd = (event) => {
+      if (event.propertyName !== 'max-height') return;
+      panel.hidden = true;
+      panel.removeEventListener('transitionend', onEnd);
+    };
+    panel.addEventListener('transitionend', onEnd);
+  };
+  sectionToggleButtons.forEach(btn => {
+    const panelId = btn.getAttribute('data-section-toggle');
+    if (!panelId) return;
+    const panel = document.getElementById(panelId);
+    if (!panel) return;
+    btn.setAttribute('aria-controls', panelId);
+    btn.setAttribute('aria-expanded', 'false');
+    setSectionToggleLabel(btn, false);
+    panel.hidden = true;
+    panel.style.maxHeight = '0px';
+    btn.addEventListener('click', () => {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      if (expanded) closeSectionPanel(btn, panel);
+      else openSectionPanel(btn, panel);
+    });
+    window.addEventListener('resize', () => {
+      if (!panel.classList.contains('is-open') || prefersReduceMotion) return;
+      panel.style.maxHeight = `${panel.scrollHeight}px`;
+    });
+  });
 
   const contactForm = document.getElementById('contact-form');
   const submitBtn = contactForm ? contactForm.querySelector('button[type="submit"]') : null;
