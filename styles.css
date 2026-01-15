@@ -1460,47 +1460,18 @@ body.mobile-performance .orbit-item {
     max-width: calc(100% - 20px);
   }
 
-  /* MOBILE: Card spacing + collapsible content */
-  .row.g-3 > .col-md-4,
-  .row.g-3 > .col-md-6,
-  .row.g-3 > .col-12 {
-    margin-bottom: 12px;
-  }
-
+  /* MOBILE COLLAPSE CARD SETUP */
   .capability,
   .glass.p-3,
   .contact-card {
-    margin-bottom: 16px;
     position: relative;
     cursor: pointer;
   }
 
-  /* Show descriptions by default (expanded state) */
-  .capability p,
-  .proof-tile,
-  .glass.p-3 p:not(.mb-0),
-  .glass.p-3 small,
-  .contact-card p {
-    max-height: 500px;
-    overflow: visible;
-    transition: max-height 0.4s ease-out, opacity 0.3s ease;
-    opacity: 1;
-  }
-
-  /* Collapsed state - hide descriptions */
-  .capability.collapsed p,
-  .glass.p-3.collapsed p:not(.mb-0),
-  .glass.p-3.collapsed small,
-  .contact-card.collapsed p {
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-  }
-
-  /* Indicator: Show + by default (when collapsed) */
-  .capability::after,
-  .glass.p-3::after,
-  .contact-card::after {
+  /* Indicator: Show + when collapsed */
+  .capability[data-bs-toggle="collapse"]::after,
+  .glass.p-3[data-bs-toggle="collapse"]::after,
+  .contact-card[data-bs-toggle="collapse"]::after {
     content: "+";
     position: absolute;
     top: 12px;
@@ -1508,16 +1479,31 @@ body.mobile-performance .orbit-item {
     font-size: 18px;
     font-weight: 300;
     color: rgba(255, 255, 255, 0.35);
-    opacity: 1;
-    transition: opacity 0.3s ease, color 0.3s ease, content 0.3s ease;
+    pointer-events: none;
+    z-index: 1;
   }
 
-  /* When NOT collapsed (expanded state): show × */
-  .capability:not(.collapsed)::after,
-  .glass.p-3:not(.collapsed)::after,
-  .contact-card:not(.collapsed)::after {
+  /* When expanded: show × */
+  .capability[data-bs-toggle="collapse"].collapsed::after,
+  .glass.p-3[data-bs-toggle="collapse"].collapsed::after,
+  .contact-card[data-bs-toggle="collapse"].collapsed::after {
     content: "×";
     color: rgba(255, 255, 255, 0.5);
+  }
+
+  /* Hide/show content based on collapse state */
+  .capability .collapse,
+  .glass.p-3 .collapse,
+  .contact-card .collapse {
+    max-height: 0;
+    overflow: hidden;
+  }
+
+  .capability .collapse.show,
+  .glass.p-3 .collapse.show,
+  .contact-card .collapse.show {
+    max-height: 500px;
+    overflow: visible;
   }
 }
 
