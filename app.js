@@ -4,17 +4,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Setup collapsible cards on mobile
   const setupCollapsibleCards = () => {
-    if (!isMobileView()) return; // Desktop - no collapse
+    const isNowMobile = isMobileView();
 
     document.querySelectorAll('.capability, .glass.p-3, .contact-card').forEach((card) => {
-      // Add collapsed class by default on mobile
-      card.classList.add('collapsed');
-
-      // Add click handler to toggle
-      card.addEventListener('click', (e) => {
-        e.preventDefault();
-        card.classList.toggle('collapsed');
-      });
+      if (isNowMobile) {
+        // On mobile: ensure collapsed state
+        card.classList.add('collapsed');
+        
+        // Remove old listeners by cloning
+        const newCard = card.cloneNode(true);
+        card.parentNode.replaceChild(newCard, card);
+        
+        // Add fresh click handler
+        newCard.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          newCard.classList.toggle('collapsed');
+        });
+      } else {
+        // On desktop: remove collapsed state
+        card.classList.remove('collapsed');
+      }
     });
   };
 
