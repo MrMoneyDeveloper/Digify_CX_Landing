@@ -270,7 +270,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let vantaEffect = null;
   const heroVantaEl = document.getElementById('hero-vanta');
   let heroInView = true;
-  let vantaRetryId = null;
   const vantaDebug = true;
   const supportsWebGL = () => {
     try {
@@ -288,15 +287,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
   const canUseWebGL = supportsWebGL();
-  const canUseVanta = () => {
-    if (!heroVantaEl) return false;
-    if (prefersReduceMotion) return false;
-    return canUseWebGL;
-  };
   const logVantaState = (label) => {
-    if (!vantaDebug || !window.console || typeof console.debug !== 'function') return;
+    if (!vantaDebug || !window.console || typeof console.log !== 'function') return;
     const heroSize = heroVantaEl ? `${heroVantaEl.offsetWidth}x${heroVantaEl.offsetHeight}` : 'N/A';
-    console.debug('Vanta init check:', {
+    console.log('Vanta init check:', {
       label,
       vantaExists: !!window.VANTA,
       cloudsExists: !!(window.VANTA && window.VANTA.CLOUDS),
@@ -307,71 +301,120 @@ document.addEventListener('DOMContentLoaded', () => {
       prefersReduceMotion
     });
   };
-  const getVantaOptions = () => ({
-    el: heroVantaEl,
-    // Keep Vanta enabled on smaller screens for visual consistency.
-    // We only skip when reduced-motion is requested or WebGL is unavailable.
-    // On small screens, disable interaction to avoid extra work.
-    mouseControls: !isSmall,
-    touchControls: !isSmall,
-    gyroControls: false,
-    minHeight: 200.00,
-    minWidth: 200.00,
-    skyColor: 0x3ec3f7,
-    sunColor: 0xba18ff,
-    sunlightColor: 0xff5c30
-  });
-  const scheduleVantaRetry = () => {
-    if (vantaRetryId) return;
-    vantaRetryId = window.setTimeout(() => {
-      vantaRetryId = null;
-      initVanta();
-    }, 200);
+  const setHeroVantaSize = () => {
+    if (!heroVantaEl) return false;
+    const heroSection = heroVantaEl.closest('#hero');
+    if (!heroSection) return true;
+    const rect = heroSection.getBoundingClientRect();
+    if (!rect.width || !rect.height) return false;
+    heroVantaEl.style.width = `${rect.width}px`;
+    heroVantaEl.style.height = `${rect.height}px`;
+    return true;
   };
   const initVanta = () => {
-    if (vantaEffect || !heroInView || !canUseVanta()) return;
+    if (vantaEffect) return;
+    if (prefersReduceMotion) {
+      if (vantaDebug && window.console && typeof console.log === 'function') {
+        console.log(`Vanta skipped: reduces motion=${prefersReduceMotion}`);
+      }
+      return;
+    }
+    if (!heroVantaEl) {
+      if (vantaDebug && window.console && typeof console.warn === 'function') {
+        console.warn('Vanta: #hero-vanta element not found');
+      }
+      return;
+    }
+    if (!canUseWebGL) {
+      if (vantaDebug && window.console && typeof console.warn === 'function') {
+        console.warn('Vanta: WebGL not available');
+      }
+      return;
+    }
     logVantaState('init');
-    if (!window.VANTA || !window.VANTA.CLOUDS) {
-      // Fail gracefully if Vanta hasn't loaded yet.
-      scheduleVantaRetry();
+    if (!window.VANTA) {
+      if (vantaDebug && window.console && typeof console.warn === 'function') {
+        console.warn('Vanta: window.VANTA not available yet');
+      }
+      return;
+    }
+    if (!window.VANTA.CLOUDS) {
+      if (vantaDebug && window.console && typeof console.warn === 'function') {
+        console.warn('Vanta.CLOUDS not available');
+      }
       return;
     }
     if (!window.THREE) {
-      // Some browsers need the THREE global before Vanta can attach.
-      scheduleVantaRetry();
+      if (vantaDebug && window.console && typeof console.warn === 'function') {
+        console.warn('Vanta: window.THREE not available');
+      }
       return;
     }
-    const rect = heroVantaEl.getBoundingClientRect();
-    if (!rect.width || !rect.height) {
-      scheduleVantaRetry();
+    if (!setHeroVantaSize()) {
+      if (vantaDebug && window.console && typeof console.warn === 'function') {
+        console.warn('Vanta: hero size not ready');
+      }
       return;
     }
     try {
-      vantaEffect = window.VANTA.CLOUDS(getVantaOptions());
+      vantaEffect = window.VANTA.CLOUDS({
+        el: heroVantaEl,
+        mouseControls: !isSmall,
+        touchControls: !isSmall,
+        gyroControls: false,
+        minHeight: 200.00,
+        minWidth: 200.00,
+        skyColor: 0x3ec3f7,
+        sunColor: 0xba18ff,
+        sunlightColor: 0xff5c30,
+        speed: 0.5,
+        zoom: 1.0
+      });
+      if (vantaDebug && window.console && typeof console.log === 'function') {
+        console.log('Vanta initialized successfully');
+      }
     } catch (err) {
       vantaEffect = null;
-      if (vantaDebug && window.console && typeof console.warn === 'function') {
-        console.warn('Vanta init failed:', err);
+      if (window.console && typeof console.error === 'function') {
+        console.error('Vanta initialization failed:', err);
       }
     }
   };
   const destroyVanta = () => {
     if (!vantaEffect) return;
-    vantaEffect.destroy();
-    vantaEffect = null;
+    try {
+      vantaEffect.destroy();
+      vantaEffect = null;
+      if (vantaDebug && window.console && typeof console.log === 'function') {
+        console.log('Vanta destroyed');
+      }
+    } catch (err) {
+      if (vantaDebug && window.console && typeof console.warn === 'function') {
+        console.warn('Error destroying Vanta:', err);
+      }
+    }
   };
   const updateVanta = () => {
-    if (!heroInView || !canUseVanta()) {
+    if (!heroInView || prefersReduceMotion) {
       destroyVanta();
       return;
     }
-    if (vantaEffect && typeof vantaEffect.resize === 'function') {
+    const sizeReady = setHeroVantaSize();
+    if (vantaEffect && sizeReady && typeof vantaEffect.resize === 'function') {
       vantaEffect.resize();
     }
     initVanta();
   };
-  updateVanta();
-  window.addEventListener('load', updateVanta);
+  window.setTimeout(() => {
+    if (vantaDebug && window.console && typeof console.log === 'function') {
+      console.log('Checking Vanta availability:', {
+        vantaLoaded: !!window.VANTA,
+        cloudsLoaded: !!(window.VANTA && window.VANTA.CLOUDS),
+        threeLoaded: !!window.THREE
+      });
+    }
+    updateVanta();
+  }, 100);
   if (hero) {
     const heroObserver = new IntersectionObserver(([entry]) => {
       heroInView = entry.isIntersecting;
