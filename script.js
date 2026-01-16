@@ -296,6 +296,154 @@ document.addEventListener('DOMContentLoaded', () => {
   const heroVantaEl = document.getElementById('hero-vanta');
   let heroInView = true;
   const vantaDebug = true;
+  const isChrome = (() => {
+    const ua = navigator.userAgent || '';
+    const isEdge = /Edg\//.test(ua);
+    const isOpera = /OPR\//.test(ua);
+    const isSamsung = /SamsungBrowser\//.test(ua);
+    const isChromeLike = /Chrome\//.test(ua) || /Chromium\//.test(ua);
+    return isChromeLike && !isEdge && !isOpera && !isSamsung;
+  })();
+  const vantaFailureReasons = new Set();
+  let webglInfoLogged = false;
+  let webglEventsAttached = false;
+  let webglDiagnosticsAttempted = false;
+
+  const reportVantaFailure = (reason, detail) => {
+    if (!vantaDebug) return;
+    if (vantaFailureReasons.has(reason)) return;
+    vantaFailureReasons.add(reason);
+    console.warn('Vanta: init blocked', { reason, detail, isChrome });
+    logWebGLDiagnosticsOnce();
+    if (isChrome) {
+      console.group('Chrome Vanta troubleshooting');
+      console.info('Reason:', reason);
+      console.info('1) Test with Chrome extensions disabled (Incognito mode).');
+      console.info('2) Add/adjust CSP headers if needed for Vanta/Three.js sources.');
+      console.info('3) Clear browser cache and hard refresh (Ctrl+F5 / Cmd+Shift+R).');
+      console.groupEnd();
+    }
+  };
+
+  const checkThreeContext = (() => {
+    let cached = null;
+    return () => {
+      if (cached) return cached;
+      const result = { ok: false, reason: 'unknown' };
+      if (!window.THREE) {
+        result.reason = 'THREE missing';
+        cached = result;
+        return result;
+      }
+      if (typeof window.THREE.WebGLRenderer !== 'function') {
+        result.reason = 'THREE.WebGLRenderer missing';
+        cached = result;
+        return result;
+      }
+      try {
+        const testCanvas = document.createElement('canvas');
+        const renderer = new window.THREE.WebGLRenderer({
+          canvas: testCanvas,
+          alpha: true,
+          antialias: true,
+          powerPreference: 'high-performance'
+        });
+        const gl = renderer.getContext();
+        result.ok = !!gl;
+        result.reason = result.ok ? 'ok' : 'no-context';
+        if (typeof renderer.forceContextLoss === 'function') renderer.forceContextLoss();
+        if (typeof renderer.dispose === 'function') renderer.dispose();
+      } catch (err) {
+        result.reason = 'exception';
+        result.error = err;
+      }
+      cached = result;
+      return result;
+    };
+  })();
+
+  const getWebGLContext = (canvas) => {
+    if (!canvas) return null;
+    return (
+      canvas.getContext('webgl2') ||
+      canvas.getContext('webgl') ||
+      canvas.getContext('experimental-webgl')
+    );
+  };
+
+  const logWebGLDiagnosticsOnce = () => {
+    if (!vantaDebug || webglDiagnosticsAttempted) return;
+    webglDiagnosticsAttempted = true;
+    const diagCanvas = document.createElement('canvas');
+    const gl = getWebGLContext(diagCanvas);
+    if (!gl) {
+      console.warn('WebGL diagnostic: context unavailable');
+      return;
+    }
+    logWebGLInfo(gl, 'diagnostic');
+    logWebGLErrors(gl, 'diagnostic');
+  };
+
+  const getWebGLErrorName = (gl, code) => {
+    if (!gl) return 'UNKNOWN';
+    const map = {
+      [gl.NO_ERROR]: 'NO_ERROR',
+      [gl.INVALID_ENUM]: 'INVALID_ENUM',
+      [gl.INVALID_VALUE]: 'INVALID_VALUE',
+      [gl.INVALID_OPERATION]: 'INVALID_OPERATION',
+      [gl.INVALID_FRAMEBUFFER_OPERATION]: 'INVALID_FRAMEBUFFER_OPERATION',
+      [gl.OUT_OF_MEMORY]: 'OUT_OF_MEMORY',
+      [gl.CONTEXT_LOST_WEBGL]: 'CONTEXT_LOST_WEBGL'
+    };
+    return map[code] || 'UNKNOWN';
+  };
+
+  const logWebGLErrors = (gl, label) => {
+    if (!vantaDebug || !gl) return;
+    const errors = [];
+    let err = gl.getError();
+    let guard = 0;
+    while (err !== gl.NO_ERROR && guard < 12) {
+      errors.push({ code: err, name: getWebGLErrorName(gl, err) });
+      err = gl.getError();
+      guard += 1;
+    }
+    if (errors.length) {
+      console.warn('WebGL errors detected', { label, errors });
+    } else {
+      console.log('WebGL error check: clean', { label });
+    }
+  };
+
+  const logWebGLInfo = (gl, label) => {
+    if (!vantaDebug || !gl) return;
+    const info = { label };
+    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+    if (debugInfo) {
+      info.vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
+      info.renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+    }
+    console.log('WebGL context info', info);
+  };
+
+  const attachWebGLEvents = (canvas) => {
+    if (!canvas || webglEventsAttached) return;
+    webglEventsAttached = true;
+    canvas.addEventListener('webglcontextlost', (event) => {
+      console.error('WebGL context lost', { event });
+    }, false);
+    canvas.addEventListener('webglcontextrestored', () => {
+      console.info('WebGL context restored');
+    }, false);
+  };
+
+  document.addEventListener('securitypolicyviolation', (event) => {
+    console.warn('CSP violation', {
+      blockedURI: event.blockedURI,
+      violatedDirective: event.violatedDirective,
+      effectiveDirective: event.effectiveDirective
+    });
+  });
 
   const supportsWebGL = () => {
     try {
@@ -355,8 +503,23 @@ document.addEventListener('DOMContentLoaded', () => {
     if (vantaEffect) return;
     if (prefersReduceMotion || !heroInView) return;
     if (!heroVantaEl) return;
-    if (!canUseWebGL) return;
-    if (!window.VANTA || !window.VANTA.CLOUDS || !window.THREE) return;
+    if (!canUseWebGL) {
+      reportVantaFailure('webgl-unsupported', { canUseWebGL });
+      return;
+    }
+    if (!window.VANTA || !window.VANTA.CLOUDS || !window.THREE) {
+      reportVantaFailure('libs-missing', {
+        vantaExists: !!window.VANTA,
+        cloudsExists: !!(window.VANTA && window.VANTA.CLOUDS),
+        threeExists: !!window.THREE
+      });
+      return;
+    }
+    const threeCheck = checkThreeContext();
+    if (!threeCheck.ok) {
+      reportVantaFailure('three-context', threeCheck);
+      return;
+    }
 
     logVantaState('attempting-init');
 
@@ -380,8 +543,23 @@ document.addEventListener('DOMContentLoaded', () => {
         zoom: 1.0
       });
       console.log('✅ Vanta initialized');
+      const vantaCanvas = (vantaEffect && vantaEffect.renderer && vantaEffect.renderer.domElement)
+        ? vantaEffect.renderer.domElement
+        : heroVantaEl.querySelector('canvas');
+      if (vantaCanvas) {
+        attachWebGLEvents(vantaCanvas);
+        const gl = getWebGLContext(vantaCanvas);
+        if (!webglInfoLogged) {
+          logWebGLInfo(gl, 'post-init');
+          logWebGLErrors(gl, 'post-init');
+          webglInfoLogged = true;
+        }
+      } else {
+        reportVantaFailure('no-canvas', { heroElement: !!heroVantaEl });
+      }
     } catch (err) {
       console.error('❌ Vanta init failed:', err);
+      reportVantaFailure('init-exception', { err });
       vantaEffect = null;
     }
   };
